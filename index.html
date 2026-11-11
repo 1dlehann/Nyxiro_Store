@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NyxiroPOS - Point of Sale</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f4f6fb;
+            color: #202b45;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: #111c3a;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 18px;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: .5px;
+            margin: 5px 10px 40px;
+        }
+
+        .brand span {
+            color: #6c8cff;
+        }
+
+        .menu-label {
+            color: #8490ae;
+            font-size: 11px;
+            font-weight: bold;
+            margin: 25px 12px 12px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar .nav-link {
+            color: #aeb9d2;
+            padding: 13px 14px;
+            border-radius: 10px;
+            margin-bottom: 7px;
+            display: flex;
+            gap: 13px;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background: #293b70;
+        }
+
+        .sidebar .nav-link i {
+            font-size: 18px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: 750;
+            margin: 0;
+        }
+
+        .date-text {
+            color: #8993a8;
+            font-size: 13px;
+        }
+
+        .profile {
+            background: white;
+            padding: 9px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 3px 15px #18264a0a;
+        }
+
+        .profile-icon {
+            width: 37px;
+            height: 37px;
+            background: #e9edff;
+            color: #506de0;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            border: 1px solid #edf0f6;
+            height: 100%;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 21px;
+            margin-bottom: 18px;
+        }
+
+        .stat-card p {
+            color: #8b95a9;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+            font-weight: 750;
+            margin: 0;
+        }
+
+        .panel {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            border: 1px solid #edf0f6;
+            margin-top: 22px;
+        }
+
+        .panel-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .table {
+            vertical-align: middle;
+        }
+
+        .table th {
+            color: #8791a5;
+            font-size: 12px;
+            font-weight: 600;
+            border-bottom: 1px solid #edf0f6;
+            padding: 13px;
+        }
+
+        .table td {
+            font-size: 13px;
+            padding: 15px 13px;
+        }
+
+        .badge-stock {
+            padding: 6px 10px;
+            border-radius: 7px;
+            font-size: 11px;
+        }
+
+        .stock-safe {
+            background: #e3f8ed;
+            color: #159653;
+        }
+
+        .stock-low {
+            background: #fff2d9;
+            color: #c88916;
+        }
+
+        .stock-empty {
+            background: #ffe5e5;
+            color: #d33b3b;
+        }
+
+        .btn-primary {
+            background: #526ee5;
+            border-color: #526ee5;
+        }
+
+        .btn-primary:hover {
+            background: #405bd0;
+            border-color: #405bd0;
+        }
+
+        .form-control,
+        .form-select {
+            border-color: #e4e8f0;
+            padding: 10px 12px;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #8499ff;
+            box-shadow: 0 0 0 3px #526ee51a;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid #edf0f6;
+            border-radius: 13px;
+            padding: 17px;
+            height: 100%;
+        }
+
+        .product-symbol {
+            height: 75px;
+            background: #f0f3ff;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 30px;
+            color: #526ee5;
+            margin-bottom: 13px;
+        }
+
+        .product-card h6 {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .product-card small {
+            color: #8993a8;
+        }
+
+        .cashier-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        .cart-panel {
+            background: white;
+            border: 1px solid #edf0f6;
+            border-radius: 15px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .cart-item {
+            border-bottom: 1px solid #edf0f6;
+            padding: 13px 0;
+        }
+
+        .cart-total {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .empty-state {
+            color: #929bad;
+            text-align: center;
+            padding: 35px 10px;
+            font-size: 13px;
+        }
+
+        #nota {
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 75px;
+                padding: 20px 10px;
+            }
+
+            .brand {
+                font-size: 0;
+                margin: 10px 0 35px;
+                text-align: center;
+            }
+
+            .brand span {
+                font-size: 23px;
+            }
+
+            .sidebar .nav-link {
+                justify-content: center;
+                font-size: 0;
+            }
+
+            .sidebar .nav-link i {
+                font-size: 20px;
+            }
+
+            .menu-label {
+                font-size: 0;
+            }
+
+            .main-content {
+                margin-left: 75px;
+                padding: 20px;
+            }
+
+            .cashier-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .main-content {
+                padding: 15px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .profile {
+                padding: 7px;
+            }
+
+            .profile div:last-child {
+                display: none;
+            }
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #nota,
+            #nota * {
+                visibility: visible;
+            }
+
+            #nota {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                padding: 20px;
+                color: black;
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">Nyxiro<span>POS</span></div>
+
+        <div class="menu-label">MENU UTAMA</div>
+
+        <nav class="nav flex-column">
+            <a class="nav-link active" data-page="dashboard">
+                <i class="bi bi-grid-1x2-fill"></i> Dashboard
+            </a>
+            <a class="nav-link" data-page="produk">
+                <i class="bi bi-box-seam"></i> Produk
+            </a>
+            <a class="nav-link" data-page="kasir">
+                <i class="bi bi-cart3"></i> Kasir
+            </a>
+            <a class="nav-link" data-page="riwayat">
+                <i class="bi bi-clock-history"></i> Riwayat
+            </a>
+        </nav>
+
+        <div class="menu-label">SISTEM</div>
+
+        <div class="small text-secondary px-3">
+            <i class="bi bi-shield-check me-2"></i> Sistem Kasir
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="topbar">
+            <div>
+                <h1 class="page-title" id="judulHalaman">Dashboard</h1>
+                <div class="date-text" id="tanggal"></div>
+            </div>
+
+            <div class="profile">
+                <div class="profile-icon">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div>
+                    <div class="fw-bold small">Administrator</div>
+                    <div class="text-secondary" style="font-size:11px">NyxiroPOS</div>
+                </div>
+            </div>
+        </div>
+
+        <section id="dashboard" class="page-section">
+            <div class="mb-4">
+                <h5 class="fw-bold mb-1">Selamat datang di NyxiroPOS!</h5>
+                <p class="text-secondary small mb-0">Berikut ringkasan aktivitas toko hari ini.</p>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#e9edff;color:#526ee5">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                        <p>Omzet Hari Ini</p>
+                        <h3 id="omzet">Rp0</h3>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#e2f8ed;color:#20a464">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <p>Total Stok Produk</p>
+                        <h3 id="totalStok">0</h3>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#fff1dc;color:#d99522">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+                        <p>Transaksi Hari Ini</p>
+                        <h3 id="totalTransaksi">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="panel-title">Transaksi Terbaru</h5>
+                    <button class="btn btn-sm btn-light" onclick="pindahHalaman('riwayat')">Lihat Semua</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID TRANSAKSI</th>
+                                <th>TANGGAL</th>
+                                <th>PEMBAYARAN</th>
+                                <th>TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transaksiTerbaru"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="produk" class="page-section d-none">
+            <div class="panel mt-0">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                    <div>
+                        <h5 class="panel-title mb-1">Manajemen Produk</h5>
+                        <p class="text-secondary small mb-0">Kelola produk dan persediaan toko.</p>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="bukaModalProduk()">
+                        <i class="bi bi-plus-lg me-1"></i> Tambah Produk
+                    </button>
+                </div>
+
+                <input type="text" class="form-control mb-3" id="cariProduk" placeholder="Cari nama produk...">
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>PRODUK</th>
+                                <th>HARGA</th>
+                                <th>STOK</th>
+                                <th>STATUS</th>
+                                <th>AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="daftarProduk"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="kasir" class="page-section d-none">
+            <div class="cashier-layout">
+                <div>
+                    <div class="panel mt-0">
+                        <h5 class="panel-title">Pilih Produk</h5>
+                        <input type="text" class="form-control mb-3" id="cariKasir" placeholder="Cari produk...">
+                        <div class="row g-3" id="katalogProduk"></div>
+                    </div>
+                </div>
+
+                <div class="cart-panel">
+                    <h5 class="panel-title">
+                        <i class="bi bi-cart3 me-2"></i>Keranjang
+                    </h5>
+
+                    <div id="daftarKeranjang">
+                        <div class="empty-state">Belum ada produk dipilih.</div>
+                    </div>
+
+                    <div class="border-top pt-3 mt-3">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-secondary small">Total Pembayaran</span>
+                            <span class="cart-total" id="totalBayar">Rp0</span>
+                        </div>
+
+                        <label class="form-label small fw-bold">Metode Pembayaran</label>
+                        <select class="form-select mb-3" id="metodePembayaran">
+                            <option value="Tunai">Tunai</option>
+                            <option value="QRIS">QRIS</option>
+                            <option value="Transfer">Transfer</option>
+                        </select>
+
+                        <div id="bagianTunai">
+                            <label class="form-label small fw-bold">Uang Diterima</label>
+                            <input type="number" class="form-control mb-2" id="uangDiterima" placeholder="Masukkan nominal">
+                            <div class="d-flex justify-content-between small mb-3">
+                                <span class="text-secondary">Kembalian</span>
+                                <strong id="kembalian">Rp0</strong>
+                            </div>
+                        </div>
+
+                        <div id="statusPembayaran" class="small text-danger mb-2"></div>
+
+                        <button class="btn btn-primary w-100 py-2" id="btnBayar" onclick="prosesPembayaran()">
+                            <i class="bi bi-check-circle me-1"></i> Proses Pembayaran
+                        </button>
+
+                        <button class="btn btn-light w-100 mt-2 btn-sm" onclick="kosongkanKeranjang()">
+                            Kosongkan Keranjang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="riwayat" class="page-section d-none">
+            <div class="panel mt-0">
+                <h5 class="panel-title">Riwayat Transaksi</h5>
+                <p class="text-secondary small">Daftar seluruh transaksi yang telah dilakukan.</p>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID TRANSAKSI</th>
+                                <th>TANGGAL</th>
+                                <th>METODE</th>
+                                <th>TOTAL</th>
+                                <th>AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="daftarRiwayat"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal fade" id="modalProduk" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius:15px">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="judulModal">Tambah Produk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form id="formProduk">
+                    <div class="modal-body">
+                        <input type="hidden" id="indexProduk">
+
+                        <label class="form-label small fw-bold">Nama Produk</label>
+                        <input type="text" class="form-control mb-3" id="namaProduk" required>
+
+                        <label class="form-label small fw-bold">Harga Produk</label>
+                        <input type="number" class="form-control mb-3" id="hargaProduk" min="1" required>
+
+                        <label class="form-label small fw-bold">Jumlah Stok</label>
+                        <input type="number" class="form-control" id="stokProduk" min="0" required>
+                    </div>
+
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Produk</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="nota">
+        <div id="detailNota"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
